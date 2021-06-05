@@ -56,3 +56,28 @@ List all subscription entries available in database for user with start and vali
 Sample output
 
 [      {          "plan_id": "TRIAL",          "start_date": "2020-02-22",          "valid_till": "2020-02-28"      },      {          "plan_id": "PRO_1M",          "start_date": "2020-02-29",          "valid_till": "2020-03-30"      }  ] 
+
+**Database Details**
+-------------------------
+**NOTE: Use Mysql or mariadb**
+
+Create Database as subscriptionservice
+Inside Database subscriptionservice ,create 3 tables with help of below commands:
+1. CREATE TABLE `users` (
+	`user` VARCHAR(50) NOT NULL,
+	`created_at` DATETIME NOT NULL DEFAULT curtime(),
+	UNIQUE INDEX `unique_user_id` (`user`)
+)
+2. CREATE TABLE `userplans` (
+	`plan_id` VARCHAR(50) NOT NULL,
+	`start_date` DATE NOT NULL DEFAULT curdate(),
+	`user_name` VARCHAR(50) NOT NULL,
+	`expiry_date` DATE NOT NULL,
+	UNIQUE INDEX `unique_user_id` (`plan_id`, `user_name`)
+)
+3. CREATE TABLE `plans` (
+	`plan_id` VARCHAR(50) NOT NULL,
+	`cost` DOUBLE NOT NULL DEFAULT 0,
+	`validity` INT(11) NOT NULL,
+	UNIQUE INDEX `unique_user_id` (`plan_id`)
+)
