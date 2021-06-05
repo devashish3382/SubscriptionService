@@ -1,4 +1,5 @@
 const { GetPlanById, GetUserByName } = require('./../DB/Queries');
+const moment = require('moment');
 
 const isValidPlan = async (req, res, next) => {
   let plan_id = req.body.plan_id;
@@ -19,11 +20,14 @@ const isValidUser = async (req, res, next) => {
     res.status(404).send("User not found");
   }
 }
+const isValidDate = (req, res, next) => {
+  let date = req.params.date;
+  if (!moment(date).isValid())
+    res.status(400).send("Invalid Date");
+  next();
+}
 const getExpiry = (currentDate, days) => {
-  let tmpDate = new Date(currentDate);
-  let expiry_date = new Date(currentDate);
-  expiry_date.setDate(tmpDate.getDate() + days);
-  expiry_date = expiry_date.getFullYear() + "-" + (expiry_date.getMonth()+1) + "-" + expiry_date.getDate();
+  expiry_date = moment(currentDate).add(24*days*60*60*1000).format('YYYY-MM-DD');
   return expiry_date;
 }
-module.exports = { isValidPlan, isValidUser, getExpiry };
+module.exports = { isValidPlan, isValidUser, getExpiry, isValidDate };
