@@ -1,5 +1,5 @@
 const express = require('express');
-const { isValidPlan, isValidUser, getExpiry } = require('./../Actions/SubscriptionAction')
+const { isValidPlan, isValidUser, getExpiry, isValidDate } = require('./../Actions/SubscriptionAction')
 const { AddPlan, getPlansByName, getPlansByNameAndDate } = require('../DB/Queries');
 const router = express.Router();
 
@@ -15,6 +15,7 @@ router.post('/subscription', isValidPlan, isValidUser, async (req, res) => {
     let response = { "status": "SUCCESS", amount }
     res.status(200).send(response);
   } catch (e) {
+    console.log(e);
     res.status(400).send(response)
   }
 })
@@ -24,11 +25,10 @@ router.get('/subscription/:name', isValidUser, async (req, res) => {
     let response = await getPlansByName(name);
     res.status(200).send(response);
   } catch (e) {
-    console.log(e);
     res.status(404).send("Plan not found")
   }
 })
-router.get('/subscription/:name/:date', isValidUser, async (req, res) => {
+router.get('/subscription/:name/:date', isValidUser, isValidDate, async (req, res) => {
   try {
     let name = req.params.name;
     let date = req.params.date;

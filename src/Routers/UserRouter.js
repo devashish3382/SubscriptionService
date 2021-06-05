@@ -1,4 +1,5 @@
 const express = require('express');
+const message = require('./../ErrorMessage.json');
 const router = express.Router();
 const { createUserData } = require('../Actions/UserAction');
 const { AddUser, GetUserByName } = require('../DB/Queries');
@@ -10,7 +11,7 @@ router.get('/user/:name', async (req, res) => {
     res.status(200).send(response);
   }
   catch (err) {
-    res.status(404).send('Unable to find with username ' + name);
+    res.status(404).send(`${name} is not registerd`);
   }
 })
 
@@ -21,7 +22,8 @@ router.put('/user/:name', async (req, res) => {
     await AddUser(response);
     res.status(200).send("Success");
   } catch (e) {
-    res.status(401).send('Unable to register');
+    msg = message[e.code] || 'Unable to register';
+    res.status(400).send(msg);
   }
 })
 
